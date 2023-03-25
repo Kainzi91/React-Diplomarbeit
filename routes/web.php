@@ -22,11 +22,15 @@ Admin Routes
 
 Route::get('AdminHome', [\App\Http\Controllers\AdminController::class, 'formyadmin'])->middleware(['auth', 'verified', 'isAdmin'])->name('AdminHome');
 Route::get('AdminInsertPage', [\App\Http\Controllers\AdminController::class, 'showInsertUser'])->middleware(['auth', 'verified', 'isAdmin'])->name('AdminInsertPage');
-/* 
+Route::get('AdminUpdatePage', [\App\Http\Controllers\AdminController::class, 'showUpdateUser'])->middleware(['auth', 'verified', 'isAdmin'])->name('AdminUpdatePage');
+
+/*
 Manager Routes 
 */
 Route::get('ProjectHome', [\App\Http\Controllers\ProjectController::class, 'formyprojects'])->middleware(['auth', 'verified', 'isManager'])->name('ProjectHome');
-
+/*
+Routes for everbody
+*/
 Route::get('Scheduler', [\App\Http\Controllers\StaffingController::class, 'formystaffing'])->name('Scheduler');
 
 
@@ -49,27 +53,21 @@ Route::get('Statistic', function () {
     return Inertia::render('Statistic/Statistic');
 });
 
-Route::get('ProjectUpdatePage', function () {
-    return Inertia::render('Project/ProjectUpdatePage');
-});
 
 Route::get('ProjectInsertPage', function () {
     return Inertia::render('Project/ProjectInsertPage');
 });
-
-
-Route::get('AdminUpdatePage', function () {
-    return Inertia::render('Admin/AdminUpdatePage');
+Route::get('ProjectUpdatePage', function () {
+    return Inertia::render('Project/ProjectUpdatePage');
 });
+
+
+
 
 Route::get('/NewsPage', function () {
     return Inertia::render('NewsPage');
 })->middleware(['auth', 'verified'])->name('NewsPage');
 
-
-Route::get('/projects_list', function () {
-    return Inertia::render('projects_list');
-})->middleware(['auth', 'verified', 'isUser'])->name('projects_list');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -21,20 +21,6 @@ class AdminController extends Controller
         return Inertia::render('Admin/AdminHome', $encode);
     }
    
-    
-    public function insertData(Request $request)
-    {
-        $user = new User;
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = '12345678';
-        $user->role = $request->input('role');
-        $user->save();
-
-        return response()->json(['message' => 'Data inserted successfully']);
-    }
-
-
     public function myRegister(Request $request)
     {
         $user = new User;
@@ -142,7 +128,20 @@ class AdminController extends Controller
         ->orderBy('name')
         ->get();
         
-        return Inertia::render('Admin/AdminInsertPage', $departments);
+        return Inertia::render('Admin/AdminInsertPage', array('department' => $departments));
+    }
+
+    
+    public function showUpdateUser()
+    {
+        
+        
+        $departments=DB::table('departments')
+        ->select('name')
+        ->orderBy('name')
+        ->get();
+        
+        return Inertia::render('Admin/AdminUpdatePage', array('department' => $departments));
     }
 
  
