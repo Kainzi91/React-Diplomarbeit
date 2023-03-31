@@ -8,9 +8,7 @@ import UniversalButton from "../Buttons/UniversalButtonComponent";
 import Datepicker from "react-tailwindcss-datepicker";
 
 const inputStyle = {
-    maxWidth: "500px",
-    width: "100%",
-    margin: "0.5rem",
+    width: "500px",
 };
 
 export default function ProjectUpdateComponent(props) {
@@ -81,14 +79,12 @@ export default function ProjectUpdateComponent(props) {
                     <form >
                         <div style={inputStyle}>
                             <InputLabel
-                               
                                 className="mt-4"
                                 forInput="firstname"
                                 value="Vorname"
                             />
 
                             <TextInput
-                     
                                 id="firstname"
                                 name="firstname"
                                 value={props.firstname}

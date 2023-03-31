@@ -6,9 +6,7 @@ import { useForm } from "@inertiajs/react";
 import UniversalButton from "../Buttons/UniversalButtonComponent";
 import DropdownForm from "../Inputs/DropdownForm";
 const inputStyle = {
-    maxWidth: "500px",
-  width: "100%",
-  margin: "0.5rem",
+    width: "500px",
 };
 
 export default function AdminUpdate(props) {
@@ -99,7 +97,7 @@ export default function AdminUpdate(props) {
         <>
             <div>
                 <div className="flex justify-center align-center p-12">
-                    <form onSubmit={handleSubmit} >
+                    <form onSubmit={handleSubmit}>
                         <div style={inputStyle}>
                             <InputLabel
                                 className="mt-4"
