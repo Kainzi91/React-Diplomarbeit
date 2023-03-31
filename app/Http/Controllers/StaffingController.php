@@ -15,21 +15,27 @@ class StaffingController extends Controller
     public function formystaffing ()
     {
         {
-             $jsonString=DB::table('staffings')
-            ->join('persons', 'staffings.person_Id', '=', 'persons.id')
-            ->join('projects', 'staffings.project_Id', '=', 'projects.id')
-            ->select('persons.id', 'persons.firstname as name', 'persons.lastname','staffings.id as entryNumber' ,'projects.name as project', 'staffings.startDate as start', 'staffings.endDate as end')
+            $jsonString = DB::table('persons')
+            ->leftJoin('staffings', 'staffings.person_Id', '=', 'persons.id')
+            ->leftJoin('projects', 'staffings.project_Id', '=', 'projects.id')
+            ->select('persons.id', 'persons.firstname as name', 'persons.lastname', 'staffings.id as entryNumber', 'projects.name as project', 'staffings.startDate as start', 'staffings.endDate as end')
             ->orderBy('persons.lastname')
             ->orderBy('start')
             ->get();
 
-            $projects=DB::table('projects')
+
+
+        $projects = DB::table('projects')
             ->select('name')
             ->orderBy('name')
             ->get();
-    
 
-            return Inertia::render('Scheduler', ['data' => $jsonString, 'projects' => $projects]);
+        $persons = DB::table('persons')
+            ->select('id', 'firstname', 'lastname')
+            ->orderBy('lastname')
+            ->get();
+
+        return Inertia::render('Scheduler', ['data' => $jsonString, 'projects' => $projects, 'allPersons' => $persons]);
         }
     
     }
