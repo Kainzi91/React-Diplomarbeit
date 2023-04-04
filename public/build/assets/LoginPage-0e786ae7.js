@@ -1,0 +1,1 @@
+import{a as r,F as t,j as o,n as i}from"./app-a61ddbe7.js";import n from"./Login-eb0bc988.js";import"./GuestLayout-e343fa7b.js";import"./TextInput-f769013a.js";import"./InputLabel-ab29938f.js";import"./PrimaryButton-2c379c42.js";function j(a){return r(t,{children:[o(i,{title:"Login"}),o(n,{})]})}export{j as default};
