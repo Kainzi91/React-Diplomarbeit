@@ -1,8 +1,8 @@
 import { SplittMonthFunction } from "./SplittMonthFunction";
 export const addToPersons = (data, persons, allPersons) => {
 
-    console.log(data);
-    console.log(persons);
+    //console.log(data);
+    //console.log(persons);
 
     data.forEach((item) => {
         
@@ -13,6 +13,7 @@ export const addToPersons = (data, persons, allPersons) => {
                 end: item.end,
                 project: item.project,
                 entryNumber: item.entryNumber,
+                department: item.department,
             };
 
             let seperate = [];
@@ -27,12 +28,15 @@ export const addToPersons = (data, persons, allPersons) => {
                 end: item.end,
                 project: item.project,
                 entryNumber: item.entryNumber,
+                department: item.department,
             };
 
             SplittMonthFunction(unavailable, seperate);
 
             persons.push({
                 id: item.id,
+                color: item.color,
+                department: item.department,
                 name: item.name,
                 lastname: item.lastname,
                 unavailable: seperate,

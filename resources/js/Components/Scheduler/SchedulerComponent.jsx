@@ -34,20 +34,26 @@ const stickyColumnStyles = {
     backgroundColor: "rgb(31 41 55)",
 };
 
-const datePickerWrapperStyles = {
-    zIndex: 11, // Set this to a higher value than the zIndex in stickyColumnStyles
-};
-
 function SchedulerComponent(data) {
-    const [month, setMonth] = useState(new Date()); // initial value is today's date
+    const [month, setMonth] = useState(new Date());
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const [startDate, setStartDate] = useState(firstDayOfMonth);
 
-    //console.log(data);
+    const lastDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+    );
+
+    const [endDate, setEndDate] = useState(lastDayOfMonth);
 
     const [selectedProject, setSelectedProject] = useState("");
+    const [selectedDepartment, setSelectedDepartment] = useState("");
 
     const renderProjectFilter = () => {
         const projectOptions = data.projects.map((project) => (
-            <option key={project.id} value={project.id}>
+            <option key={project.name} value={project.name}>
                 {project.name}
             </option>
         ));
@@ -70,11 +76,34 @@ function SchedulerComponent(data) {
         );
     };
 
-    const daysInMonth = new Date(
-        month.getFullYear(),
-        month.getMonth() + 1,
-        0
-    ).getDate();
+    const renderDepartmentFilter = () => {
+        const departmentOptions = data.departments.map((department) => (
+            <option key={department.name} value={department.name}>
+                {department.name}
+            </option>
+        ));
+        return (
+            <Fragment>
+                <label htmlFor="department-filter" className="mr-2">
+                    Abteilungsfilter:
+                </label>
+                <select
+                    id="department-filter"
+                    value={selectedDepartment}
+                    onChange={(e) => setSelectedDepartment(e.target.value)}
+                    className="rounded-md border-gray-300"
+                >
+                    <option value="">Alle Abteilungen</option>
+                    {departmentOptions}
+                </select>
+            </Fragment>
+        );
+    };
+
+    const daysInMonth =
+        Math.floor(
+            (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+        ) + 1; // Add 1 here
 
     const renderDays = () => {
         const days = [];
@@ -94,12 +123,16 @@ function SchedulerComponent(data) {
             "12",
         ];
 
-        for (let i = 1; i <= daysInMonth; i++) {
-            const date = new Date(month.getFullYear(), month.getMonth(), i);
-            const weekday = weekdays[date.getDay()];
-            const monthname = months[month.getMonth()];
+        let currentDate = new Date(startDate);
+        for (let i = 0; i < daysInMonth; i++) {
+            const weekday = weekdays[currentDate.getDay()];
+            const monthname = months[currentDate.getMonth()];
             const dayname =
-                weekday + " " + i.toString().padStart(2, "0") + "." + monthname;
+                weekday +
+                " " +
+                currentDate.getDate().toString().padStart(2, "0") +
+                "." +
+                monthname;
             days.push(
                 <th
                     key={i}
@@ -109,39 +142,56 @@ function SchedulerComponent(data) {
                     {dayname}
                 </th>
             );
+            currentDate.setDate(currentDate.getDate() + 1);
         }
         return days;
     };
+
     // render table headers for each day of the month
     const persons = [];
 
     const renderPersons = () => {
         addToPersons(data.data, persons, data.allPersons);
-
-        return persons.map((person, index) => {
+        console.log(selectedDepartment);
+        return persons.map((person, personIndex) => {
             const personProjects = [];
             person.unavailable.forEach(
-                ({ start, end, project, entryNumber }) => {
+                ({ start, end, project, entryNumber, department }) => {
                     const start_Date = new Date(start);
                     const end_Date = new Date(end);
                     if (
                         (!selectedProject || project === selectedProject) &&
-                        start_Date.getFullYear() === month.getFullYear() &&
-                        start_Date.getMonth() === month.getMonth() &&
-                        end_Date.getFullYear() === month.getFullYear() &&
-                        end_Date.getMonth() === month.getMonth()
-                      ) {
+                        (!selectedDepartment ||
+                            department === selectedDepartment) &&
+                        start_Date.getTime() <= endDate.getTime() &&
+                        end_Date.getTime() >= startDate.getTime()
+                    ) {
+                        const adjustedStartDate = new Date(
+                            Math.max(start_Date.getTime(), startDate.getTime())
+                        );
+                        const adjustedEndDate = new Date(
+                            Math.min(end_Date.getTime(), endDate.getTime())
+                        );
+
                         personProjects.push({
-                          project,
-                          start: start_Date.getDate() - 1,
-                          end: end_Date.getDate() - 1,
-                          start_Date: start,
-                          end_Date: end,
-                          entryNumber: entryNumber,
+                            project,
+                            start: Math.floor(
+                                (adjustedStartDate.getTime() -
+                                    startDate.getTime()) /
+                                    (1000 * 60 * 60 * 24)
+                            ),
+                            end: Math.floor(
+                                (adjustedEndDate.getTime() -
+                                    startDate.getTime()) /
+                                    (1000 * 60 * 60 * 24)
+                            ),
+                            start_Date: start,
+                            end_Date: end,
+                            entryNumber: entryNumber,
                         });
-                      }
                     }
-                  );
+                }
+            );
 
             const personRows = [[]];
             personProjects.forEach((project) => {
@@ -176,22 +226,23 @@ function SchedulerComponent(data) {
                         if (currentIndex < start) {
                             personCells.push(
                                 <td
-                                    key={`gap-${currentIndex}`}
+                                    key={`gap-${rowIndex}-${currentIndex}`}
                                     colSpan={start - currentIndex}
                                     className="border px-3 py-2"
                                 ></td>
                             );
                         }
                         // Add cells for the project duration
+
                         personCells.push(
                             <td
-                                key={`${person.name}-${project}-${start}-${end}-${entryNumber}`}
+                                key={`entry-${entryNumber}-person-${person.id}-project-${project}-start-${start}-end-${end}-color-${person.color}`}
                                 colSpan={end - start + 1}
-                                className={`border px-3 py-2 bg-red-200`}
+                                className={`border px-3 py-2 bg-${person.color}-200 rounded-lg `}
                             >
                                 <Popover className="relative">
                                     <Popover.Button>
-                                        {`Project ${project}`}
+                                        {`${project}`}
                                     </Popover.Button>
 
                                     <Popover.Panel className="fixed z-50 top-0 left-0 w-screen h-screen flex items-center justify-center">
@@ -237,14 +288,14 @@ function SchedulerComponent(data) {
                 if (currentIndex < daysInMonth) {
                     personCells.push(
                         <td
-                            key={`gap-${currentIndex}`}
+                            key={`gap-${rowIndex}-${currentIndex}`}
                             colSpan={daysInMonth - currentIndex}
                             className="border px-4 py-2"
                         ></td>
                     );
                 }
                 return (
-                    <tr key={`${index}-${rowIndex}`}>
+                    <tr key={`person-${person.id}-row-${rowIndex}`}>
                         {rowIndex === 0 && (
                             <td
                                 rowSpan={personRows.length}
@@ -252,7 +303,7 @@ function SchedulerComponent(data) {
                                 style={stickyColumnStyles}
                             >
                                 <Popover className="relative">
-                                    <Popover.Button>
+                                    <Popover.Button className="text-left">
                                         {person.name}
                                         <br />
                                         {person.lastname}
@@ -297,13 +348,37 @@ function SchedulerComponent(data) {
     return (
         <div style={containerStyles}>
             <div className="flex justify-center mb-4 w-auto">
-                {renderProjectFilter()}
-                <DatePicker
-                    selected={month}
-                    onChange={(date) => setMonth(date)}
-                    dateFormat="MMMM yyyy"
-                    showMonthYearPicker
-                />
+                <div className="flex items-center justify-center space-x-4">
+                    {renderProjectFilter()}
+                    {renderDepartmentFilter()}
+                    <label htmlFor="start-date-picker" className="mr-2">
+                        Startdatum:
+                    </label>
+                    <DatePicker
+                        id="start-date-picker"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        dateFormat="dd.MM.yyyy"
+                        selectsStart
+                        startDate={startDate}
+                        endDate={endDate}
+                        className="rounded-md border-gray-300"
+                    />
+                    <label htmlFor="end-date-picker" className="mr-2">
+                        Enddatum:
+                    </label>
+                    <DatePicker
+                        id="end-date-picker"
+                        selected={endDate}
+                        onChange={(date) => setEndDate(date)}
+                        dateFormat="dd.MM.yyyy"
+                        selectsEnd
+                        startDate={startDate}
+                        endDate={endDate}
+                        minDate={startDate}
+                        className="rounded-md border-gray-300"
+                    />
+                </div>
             </div>
 
             <div style={tableWrapperStyles}>
@@ -311,7 +386,7 @@ function SchedulerComponent(data) {
                     <thead>
                         <tr>
                             <th
-                                className="border px-4 py-2 bg-gray-800 text-gray-300"
+                                className="border px-4 py-2 bg-gray-800 text-gray-300 text-left"
                                 style={stickyColumnStyles}
                             >
                                 Mitarbeiter
