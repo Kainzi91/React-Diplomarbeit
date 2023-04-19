@@ -88,6 +88,14 @@ const ProjectsDropdown = () => {
           className: `${active ? "bg-gray-100 text-gray-900" : "text-gray-700"} block px-4 py-2 text-sm relative z-100`,
           children: "Statistik"
         }
+      ) }),
+      /* @__PURE__ */ jsx(Menu.Item, { children: ({ active }) => /* @__PURE__ */ jsx(
+        "a",
+        {
+          href: "ProjectNotes",
+          className: `${active ? "bg-gray-100 text-gray-900" : "text-gray-700"} block px-4 py-2 text-sm relative z-100`,
+          children: "Notizen"
+        }
       ) })
     ] }) })
   ] });

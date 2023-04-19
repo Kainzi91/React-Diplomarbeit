@@ -1,6 +1,6 @@
 import { a as jsxs, j as jsx } from "../app.mjs";
 import { useState } from "react";
-import { L as LoggedIn } from "./ChangeNavbarComponent-7297efef.mjs";
+import { L as LoggedIn } from "./ChangeNavbarComponent-9de9bf28.mjs";
 import "./TextInput-1dae6f47.mjs";
 import { Head } from "@inertiajs/react";
 import UpdatePasswordForm from "./UpdatePasswordForm-b519f128.mjs";

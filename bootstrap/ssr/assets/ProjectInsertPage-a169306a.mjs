@@ -1,6 +1,6 @@
 import { j as jsx, F as Fragment, a as jsxs } from "../app.mjs";
-import { useState, useEffect } from "react";
-import { L as LoggedIn } from "./ChangeNavbarComponent-7297efef.mjs";
+import { useState } from "react";
+import { L as LoggedIn } from "./ChangeNavbarComponent-9de9bf28.mjs";
 import { useForm, Head } from "@inertiajs/react";
 import { T as TextInput, I as InputError } from "./TextInput-1dae6f47.mjs";
 import { I as InputLabel } from "./InputLabel-26a85203.mjs";
@@ -18,12 +18,17 @@ const inputStyle = {
   width: "100%",
   margin: "0.5rem"
 };
-function ProjectUpdateComponent(props) {
-  const [result, setResult] = useState("");
-  let myVar;
-  const [loading, setLoading] = useState(true);
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  myVar = urlSearchParams.get("id");
+function InsertProject(props) {
+  const [value, setValue] = useState({
+    startDate: new Date(),
+    endDate: new Date().setMonth(11)
+  });
+  const handleValueChange = (newValue) => {
+    setValue(newValue);
+    data.startDate = newValue.startDate;
+    data.endDate = newValue.endDate;
+    console.log("newValue:", data.endDate);
+  };
   const { data, setData, post, processing, errors, reset } = useForm({
     name: "",
     project_number: "",
@@ -35,58 +40,19 @@ function ProjectUpdateComponent(props) {
     city: "",
     country: ""
   });
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(`/api/editProject`, {
-          id: myVar
-        });
-        console.log(response.data);
-        setResult(response.data);
-        setData({
-          id: myVar,
-          name: response.data.project.name,
-          project_number: response.data.project.project_number,
-          description: response.data.project.description,
-          startDate: response.data.project.startDate,
-          endDate: response.data.project.endDate,
-          street: response.data.projectAddress.street,
-          zip: response.data.projectAddress.ZIP,
-          city: response.data.projectAddress.city,
-          country: response.data.projectAddress.country
-        });
-      } catch (error) {
-        console.error("Fehler beim Laden der Daten:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [myVar]);
+  console.log(data);
+  const onHandleChange = (event) => {
+    setData(event.target.name, event.target.value);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post("/api/updateProject", data).then(() => {
-      window.location.href = "ProjectHome";
+    axios.post("/api/insertProject", data).then(() => {
+      console.log("lsaslcs");
+      alert("User: " + JSON.stringify(data.name) + "wurde angelegt!");
     }).catch((error) => {
       console.log("ERROR:: ", error.response.data);
     });
   };
-  const onHandleChange = (event) => {
-    setData(event.target.name, event.target.value);
-  };
-  const [value, setValue] = useState({
-    startDate: new Date(),
-    endDate: new Date().setMonth(11)
-  });
-  const handleValueChange = (newValue) => {
-    setValue(newValue);
-    data.startDate = newValue.startDate;
-    data.endDate = newValue.endDate;
-    console.log("newValue:", data.endDate);
-  };
-  if (loading) {
-    return /* @__PURE__ */ jsx("div", { children: "Laden..." });
-  }
   return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("div", { className: "flex justify-center align-center p-12", children: /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, children: [
     /* @__PURE__ */ jsxs("div", { style: inputStyle, children: [
       /* @__PURE__ */ jsx(
@@ -302,7 +268,8 @@ function ProjectUpdateComponent(props) {
         UniversalButton,
         {
           type: "submit",
-          text: "Update"
+          href: "ProjectInsertPage",
+          text: "Hinzufügen"
         }
       ),
       /* @__PURE__ */ jsx("div", { className: "mx-2" }),
@@ -317,14 +284,14 @@ function ProjectUpdateComponent(props) {
     ] })
   ] }) }) }) });
 }
-function adminInsertPage(props) {
+function projectInsertPage(props) {
   return /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx(Head, { title: "ProjectUpdate" }),
+    /* @__PURE__ */ jsx(Head, { title: "ProjectInsertPage" }),
     /* @__PURE__ */ jsx(LoggedIn, { auth: props.auth }),
-    /* @__PURE__ */ jsx("header", { className: "bg-white shadow", children: /* @__PURE__ */ jsx("h1", { className: "max-w-7xl text-xl mx-auto py-6 px-4 sm:px-6 lg:px-8", children: "Projekte bearbeiten" }) }),
-    /* @__PURE__ */ jsx(ProjectUpdateComponent, { name: props })
+    /* @__PURE__ */ jsx("header", { className: "bg-white shadow", children: /* @__PURE__ */ jsx("h1", { className: "max-w-7xl text-xl mx-auto py-6 px-4 sm:px-6 lg:px-8", children: "Projekte hinzufügen" }) }),
+    /* @__PURE__ */ jsx(InsertProject, { name: props })
   ] });
 }
 export {
-  adminInsertPage as default
+  projectInsertPage as default
 };

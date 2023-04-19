@@ -1,6 +1,6 @@
 import { j as jsx, a as jsxs } from "../app.mjs";
 import "react";
-import { L as LoggedIn } from "./ChangeNavbarComponent-7297efef.mjs";
+import { L as LoggedIn } from "./ChangeNavbarComponent-9de9bf28.mjs";
 import { Head } from "@inertiajs/react";
 import "react/jsx-runtime";
 import "lodash";
