@@ -3,11 +3,12 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import firmenlogo from "../../../images/firmenlogo.png";
 import Dropdown from "@/Components/Inputs/Dropdown";
 import SettingsIcon from "@mui/icons-material/Settings";
+import ProjectsDropdown from "@/Components/Buttons/ProjectsDropdown";
 
 const navigation = [
     { name: "News", href: "NewsPage", current: false },
     { name: "Personaleinteilung", href: "Scheduler", current: false },
-    { name: "Projekte", href: "projects_list", current: false },
+    { name: "Projekte", href: "ProjectNotes", current: false },
 ];
 
 function classNames(...classes) {
