@@ -33,20 +33,18 @@ class StaffingController extends Controller
             ->orderBy('lastname')
             ->get();
 
-            $departments = DB::table('departments')
+        $departments = DB::table('departments')
             ->select('id', 'name', 'color')
             ->orderBy('name')
             ->get();
 
         return Inertia::render('Scheduler', ['data' => $jsonString, 'projects' => $projects, 'allPersons' => $persons, 'departments' => $departments]);
     }
+    
     public function insertStaffing(Request $request)
     {
-
         $staffingEntry = new Staffing;
         $project = Projects::where('name', $request->projectName)->first();
-
-
 
         $staffingEntry->person_Id = $request->personid;
         $staffingEntry->endDate = $request->endDate;
@@ -54,9 +52,9 @@ class StaffingController extends Controller
         $staffingEntry->project_Id = $project->id;
         $staffingEntry->save();
     }
+
     public function updateStaffing(Request $request)
     {
-
         $project = Projects::where('name', $request->projectName)->first();
         $newid = $project->id;
 
@@ -68,9 +66,9 @@ class StaffingController extends Controller
         $staffingEntry->project_Id = $newid;
         $staffingEntry->save();
     }
+
     public function deleteStaffing(Request $request)
     {
-
         $id = $request->staffingid;
         $staffingEntry = Staffing::where('id', $id)->first();
         $staffingEntry->delete();
