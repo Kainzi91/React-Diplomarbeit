@@ -7,8 +7,8 @@ import UniversalButton from "../Buttons/UniversalButtonComponent";
 import DropdownForm from "../Inputs/DropdownForm";
 const inputStyle = {
     maxWidth: "500px",
-  width: "100%",
-  margin: "0.5rem",
+    width: "100%",
+    margin: "0.5rem",
 };
 
 export default function AdminUpdate(props) {
@@ -18,7 +18,6 @@ export default function AdminUpdate(props) {
     const urlSearchParams = new URLSearchParams(window.location.search);
     myVar = urlSearchParams.get("id");
 
-    console.log(props);
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
@@ -36,16 +35,17 @@ export default function AdminUpdate(props) {
         street: "",
         role: "",
     });
-    console.log(data);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.post(`/api/editUser`, {
                     id: myVar,
                 });
-        
 
                 setResult(response.data);
+                console.log();
+                console.log();
                 setData({
                     id: myVar,
                     name: response.data.user.name,
@@ -74,16 +74,20 @@ export default function AdminUpdate(props) {
         fetchData();
     }, [myVar]);
 
+    // console.log(data);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
             .post("/api/updateUser", data)
             .then(() => {
+                alert(`Benutzer ${data.name} wurde erfolgreich edititert.`);
                 window.location.href = "AdminHome";
             })
             .catch((error) => {
                 console.log("ERROR:: ", error.response.data);
-                console.log(data);
+
+                alert(`Es wurden nicht alle Felder ausgefüllt`);
             });
     };
 
@@ -99,7 +103,7 @@ export default function AdminUpdate(props) {
         <>
             <div>
                 <div className="flex justify-center align-center p-12">
-                    <form onSubmit={handleSubmit} >
+                    <form onSubmit={handleSubmit}>
                         <div style={inputStyle}>
                             <InputLabel
                                 className="mt-4"
@@ -194,21 +198,25 @@ export default function AdminUpdate(props) {
                             />
                         </div>
 
-        
                         <div style={inputStyle}>
-                            <InputLabel className="mt-4" forInput="department" value="Abteilung" />
+                            <InputLabel
+                                className="mt-4"
+                                forInput="department"
+                                value="Abteilung"
+                            />
 
                             <DropdownForm
                                 projects={props.name.department}
                                 onHandleChange={handleChange}
                                 value={data.department}
-                                id ={"department"}
+                                id={data.department}
                                 name={"department"}
                                 autoComplete={"department"}
-                            >
-
-                            </DropdownForm>
-                            <InputError message={errors.department} className="mt-2" />
+                            ></DropdownForm>
+                            <InputError
+                                message={errors.department}
+                                className="mt-2"
+                            />
                         </div>
                         <div style={inputStyle}>
                             <InputLabel
@@ -256,7 +264,11 @@ export default function AdminUpdate(props) {
                         </div>
 
                         <div style={inputStyle}>
-                            <InputLabel className="mt-4" forInput="role" value="Role" />
+                            <InputLabel
+                                className="mt-4"
+                                forInput="role"
+                                value="Role"
+                            />
 
                             <div className="relative mt-1">
                                 <select
@@ -273,11 +285,19 @@ export default function AdminUpdate(props) {
                                     <option value="3">Mitarbeiter</option>
                                 </select>
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                    <svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M10 12l-6-6h12l-6 6z" /></svg>
+                                    <svg
+                                        className="fill-current h-4 w-4"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path d="M10 12l-6-6h12l-6 6z" />
+                                    </svg>
                                 </div>
                             </div>
 
-                            <InputError message={errors.role} className="mt-2" />
+                            <InputError
+                                message={errors.role}
+                                className="mt-2"
+                            />
                         </div>
 
                         <div style={inputStyle}>
@@ -285,8 +305,6 @@ export default function AdminUpdate(props) {
                                 className="mt-4"
                                 forInput="country"
                                 value="Country"
-
-
                             />
 
                             <TextInput
