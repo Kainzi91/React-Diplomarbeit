@@ -31,8 +31,8 @@ Route::get('ProjectHome', [\App\Http\Controllers\ProjectController::class, 'form
 /*
 Routes for everbody
 */
-Route::get('Scheduler', [\App\Http\Controllers\StaffingController::class, 'formystaffing'])->name('Scheduler');
-Route::get('ProjectNotes', [\App\Http\Controllers\NoteController::class, 'formynotes'])->name('ProjectNotes');
+Route::get('Scheduler', [\App\Http\Controllers\StaffingController::class, 'formystaffing'])->middleware(['auth', 'verified'])->name('Scheduler');
+Route::get('ProjectNotes', [\App\Http\Controllers\NoteController::class, 'formynotes'])->middleware(['auth', 'verified'])->name('ProjectNotes');
 
 
 
