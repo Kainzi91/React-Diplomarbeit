@@ -18,8 +18,8 @@ RUN composer install --prefer-dist --no-interaction
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY .env.dev /var/www/html/.env
 
-RUN php artisan config:cache && \
-    php artisan route:cache && \
+RUN php artisan config:clear && \
+    php artisan route:clear && \
     chmod 777 -R /var/www/html/storage/ && \
     chown -R www-data:www-data /var/www/ && \
     a2enmod rewrite
